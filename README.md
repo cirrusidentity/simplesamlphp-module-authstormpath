@@ -5,6 +5,12 @@ SSP Authentication Module for stormpath
 
 # Development
 
+## PHP Version
+
+Module targets php 5.6 and later. This is a requirement for some
+version of our dependencies (we need phpunit > 5.2), and older version
+have lost (or are about to lose) security support.  ## SSP Integration
+
 ## SSP Integration
 
 For automated tests we need:
@@ -27,6 +33,6 @@ phpcs --standard=PSR2 lib
 
 ## Testing
 
-### Unit Tests
+We make use of features found in later versions of phpunit. The version installed in vendor is compatible with our tests.
 
-`phpunit`
+`vendor/bin/phpunit`
