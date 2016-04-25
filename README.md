@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/cirrusidentity/simplesamlphp-module-authstormpath.svg?branch=master)](https://travis-ci.org/cirrusidentity/simplesamlphp-module-authstormpath)
+
 # simplesamlphp-module-authstormpath
 SSP Authentication Module for stormpath
 
