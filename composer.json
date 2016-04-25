@@ -1,0 +1,11 @@
+{
+    "name": "cirrusidentity/simplesamlphp-module-stormpath",
+    "description": "SSP Auth Module for stormpath",
+    "type": "simplesamlphp-module",
+    "require": {
+        "simplesamlphp/composer-module-installer": "^1.1"
+    },
+    "require-dev": {
+        "simplesamlphp/simplesamlphp": "1.14"
+    }
+}
