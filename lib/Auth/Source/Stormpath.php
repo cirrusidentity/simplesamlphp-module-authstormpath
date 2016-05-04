@@ -9,19 +9,21 @@ class sspmod_authstormpath_Auth_Source_Stormpath extends sspmod_core_Auth_UserPa
 
     private $resourceProvider;
 
-    //FIXME: put application into $config
-    private $applicationHref = 'https://api.stormpath.com/v1/applications/67tLg9FaBMBOXqAhsCYXlb';
+    private $applicationHref;
 
     public function __construct($info, &$config)
     {
         parent::__construct($info, $config);
 
-        $this->config = $config;
+        $this->config = \SimpleSAML_Configuration::loadFromArray($config);
 
-        //FIXME: validate config
+        $this->applicationHref = $this->config->getString('applicationHref');
+
+        //FIXME: add config validation tests
+
 
         //FIXME: base class on property in config
-        $this->resourceProvider = new sspmod_authstormpath_Auth_Source_RestStormpathResourceProvider();
+        $this->resourceProvider = new sspmod_authstormpath_Auth_Source_RestStormpathResourceProvider($this->config);
     }
 
     /**

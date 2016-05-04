@@ -14,6 +14,10 @@ class StormpathTest extends \PHPUnit_Framework_TestCase
     public static $good_username = 'theusername';
     public static $good_password = 'thepassword';
 
+    private $defaultConfig = [
+        'applicationHref' => 'myAppHref',
+    ];
+
     public static function setUpBeforeClass()
     {
         putenv('SIMPLESAMLPHP_CONFIG_DIR=' . dirname(dirname(dirname(__DIR__))) . '/config');
@@ -25,8 +29,7 @@ class StormpathTest extends \PHPUnit_Framework_TestCase
         $info = array(
             'AuthId' => 'sample_stormpath'
         );
-        $config = array();
-        $authSource = new \sspmod_authstormpath_Auth_Source_Stormpath($info, $config);
+        $authSource = new \sspmod_authstormpath_Auth_Source_Stormpath($info, $this->defaultConfig);
 
         $account = new \Stormpath\Resource\Account();
         $account->setUsername('abc');
@@ -55,8 +58,7 @@ class StormpathTest extends \PHPUnit_Framework_TestCase
         $info = array(
             'AuthId' => 'sample_stormpath'
         );
-        $config = array();
-        $authSource = new \sspmod_authstormpath_Auth_Source_Stormpath($info, $config);
+        $authSource = new \sspmod_authstormpath_Auth_Source_Stormpath($info, $this->defaultConfig);
         $exception = new \Stormpath\Resource\ResourceError($error);
         $provider = $this->setupMockStormpathWithException($exception);
         $authSource->setResourceProvider($provider);

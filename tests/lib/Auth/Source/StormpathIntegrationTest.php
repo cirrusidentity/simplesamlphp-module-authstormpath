@@ -8,10 +8,13 @@ namespace SimpleSAML\Test\Authstormpath\Auth\Source;
  * Test the storm path module using actual integration with Stormpath
  * @package SimpleSAML\Test\Authstormpath\Auth\Source
  */
-class StormpathTest extends \PHPUnit_Framework_TestCase
+class StormpathIntegrationTest extends \PHPUnit_Framework_TestCase
 {
     public static $good_username;
     public static $good_password;
+
+    public static $applicationHref;
+    public static $apiKeyFileLocation;
 
     public static $INI_LOADED;
 
@@ -24,6 +27,8 @@ class StormpathTest extends \PHPUnit_Framework_TestCase
 
         self::$good_username = $stormPathSettings['good_username'];
         self::$good_password = $stormPathSettings['good_password'];
+        self::$applicationHref = $stormPathSettings['applicationHref'];
+        self::$apiKeyFileLocation = $stormPathSettings['apiKeyFileLocation'];
     }
 
     protected function setUp()
@@ -41,7 +46,10 @@ class StormpathTest extends \PHPUnit_Framework_TestCase
         $info = array(
             'AuthId' => 'sample_stormpath'
         );
-        $config = array();
+        $config = array(
+            'applicationHref' => self::$applicationHref,
+            'apiKeyFileLocation' => self::$apiKeyFileLocation,
+        );
         $authSource = new \sspmod_authstormpath_Auth_Source_Stormpath($info, $config);
 
         $attributes = $authSource->login(self::$good_username, self::$good_password);
@@ -61,7 +69,10 @@ class StormpathTest extends \PHPUnit_Framework_TestCase
         $info = array(
             'AuthId' => 'sample_stormpath'
         );
-        $config = array();
+        $config = array(
+            'applicationHref' => self::$applicationHref,
+            'apiKeyFileLocation' => self::$apiKeyFileLocation,
+        );
         $authSource = new \sspmod_authstormpath_Auth_Source_Stormpath($info, $config);
 
         // Testing 'authenticate()' method is complicated since it doesn't return. Instead we relax permissions on login
