@@ -3,7 +3,8 @@
     "description": "SSP Auth Module for stormpath",
     "type": "simplesamlphp-module",
     "require": {
-        "simplesamlphp/composer-module-installer": "^1.1"
+        "simplesamlphp/composer-module-installer": "^1.1",
+        "stormpath/sdk": "^1.14"
     },
     "require-dev": {
         "simplesamlphp/simplesamlphp": "1.14",

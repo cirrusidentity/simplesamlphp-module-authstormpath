@@ -3,6 +3,28 @@
 class sspmod_authstormpath_Auth_Source_Stormpath extends sspmod_core_Auth_UserPassBase
 {
     /**
+     * @var SimpleSAML_Configuration
+     */
+    private $config;
+
+    private $resourceProvider;
+
+    //FIXME: put application into $config
+    private $applicationHref = 'https://api.stormpath.com/v1/applications/67tLg9FaBMBOXqAhsCYXlb';
+
+    public function __construct($info, &$config)
+    {
+        parent::__construct($info, $config);
+
+        $this->config = $config;
+
+        //FIXME: validate config
+
+        //FIXME: base class on property in config
+        $this->resourceProvider = new sspmod_authstormpath_Auth_Source_RestStormpathResourceProvider();
+    }
+
+    /**
      * Relaxed visibility for testability
      * @param string $username the username to check
      * @param string $password the user's password
@@ -11,16 +33,42 @@ class sspmod_authstormpath_Auth_Source_Stormpath extends sspmod_core_Auth_UserPa
      */
     public function login($username, $password)
     {
-        /*
-         * FIXME: place holder code while project is setup
-         */
-        if ($username !== 'theusername' || $password !== 'thepassword') {
+        $client = $this->resourceProvider->getClient();
+        $application = $client->getDataStore()->getResource($this->applicationHref, \Stormpath\Stormpath::APPLICATION);
+
+        try {
+            //TODO: set the organization to authentiate against (per
+            // https://docs.stormpath.com/rest/product-guide/latest/multitenancy.html#authenticating-an-account-against-an-organization)
+            // rather than authing against all Account Stores
+            //$accountStore = $anAccountStoreMapping->getAccountStore();
+            //$authenticationRequest = new UsernamePasswordRequest('usernameOrEmail', 'password',
+            //   array('accountStore' => $accountStore));
+            //$result = $application->authenticateAccount($authenticationRequest);
+
+            $result = $application->authenticate($username, $password);
+            $account = $result->getAccount();
+            //SimpleSAML_Logger::info('account ' . var_dump($account, true));
+            return array(
+                'username' => array($account->username),
+                'email' => array($account->email),
+                'fullName' => array($account->fullName),
+                'givenName' => array($account->givenName),
+                'sn' => array($account->surname),
+            );
+        } catch (\Stormpath\Resource\ResourceError $re) {
+            SimpleSAML_Logger::info("Stormpath Auth error {$re->getStatus()}, code {$re->getErrorCode()} ," .
+                "msg {$re->getMessage()} devmsg {$re->getDeveloperMessage()}");
+            //TODO: distinguish between error types
             throw new SimpleSAML_Error_Error('WRONGUSERPASS');
         }
-        return array(
-            'uid' => array('theusername'),
-            'displayName' => array('Some Random User'),
-            'eduPersonAffiliation' => array('member', 'employee'),
-        );
+    }
+
+    /**
+     * Set the provider of Stormpath clients
+     * @param sspmod_authstormpath_Auth_Source_StormpathResourceProvider $resourceProvider
+     */
+    public function setResourceProvider(sspmod_authstormpath_Auth_Source_StormpathResourceProvider &$resourceProvider)
+    {
+        $this->resourceProvider = $resourceProvider;
     }
 }
