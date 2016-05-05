@@ -1,5 +1,5 @@
 {
-    "name": "cirrusidentity/simplesamlphp-module-stormpath",
+    "name": "cirrusidentity/simplesamlphp-module-authstormpath",
     "description": "SSP Auth Module for stormpath",
     "type": "simplesamlphp-module",
     "require": {
