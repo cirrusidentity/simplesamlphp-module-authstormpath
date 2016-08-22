@@ -2,7 +2,9 @@
 
 namespace SimpleSAML\Test\Authstormpath\Auth\Source;
 
+use Stormpath\Resource\CustomData;
 use Stormpath\Resource\Error;
+use Stormpath\Stormpath;
 
 /**
  * Class StormpathTest
@@ -45,6 +47,8 @@ class StormpathTest extends \PHPUnit_Framework_TestCase
         //TODO: fill out rest of attribute assertion
     }
 
+
+
     /**
      * @dataProvider authenticationErrorProvider
      * @param $error Stormpath error
@@ -85,6 +89,7 @@ class StormpathTest extends \PHPUnit_Framework_TestCase
     private function setupMockStormpath(\Stormpath\Resource\Account $account)
     {
 
+        //TODO: figure out how to add customdata to the account
         $stubAuthenticationResult = $this->getMockBuilder('\Stormpath\Resource\AuthenticationResult')
             ->getMock();
 
@@ -100,8 +105,8 @@ class StormpathTest extends \PHPUnit_Framework_TestCase
         $stubDataStore = $this->getMockBuilder('\Stormpath\DataStore\DataStore')
             ->getMock();
 
-        // FIXME: check getResource arguments
         $stubDataStore->method('getResource')
+            ->with('myAppHref', \Stormpath\Stormpath::APPLICATION)
             ->willReturn($stubApplication);
 
         $stubClient = $this->getMockBuilder('\Stormpath\Client')

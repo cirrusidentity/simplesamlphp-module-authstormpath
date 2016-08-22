@@ -41,7 +41,7 @@ class StormpathIntegrationTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function testCorrectPassword()
+    public function testCorrectPasswordAndAttributeMapping()
     {
         $info = array(
             'AuthId' => 'sample_stormpath'
@@ -55,6 +55,10 @@ class StormpathIntegrationTest extends \PHPUnit_Framework_TestCase
         $attributes = $authSource->login(self::$good_username, self::$good_password);
         $this->assertEquals(['testusername'], $attributes['username']);
         $this->assertEquals(['testuser@example.com'], $attributes['email']);
+        $this->assertEquals(['Test'], $attributes['givenName']);
+        $this->assertEquals(['User'], $attributes['surname']);
+        $this->assertEquals(['4438ea02-5791-4fdb-983b-b35d69eb4c31'], $attributes['customAttribute']);
+
     }
 
     /**

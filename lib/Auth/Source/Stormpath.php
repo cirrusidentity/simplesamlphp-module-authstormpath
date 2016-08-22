@@ -11,6 +11,8 @@ class sspmod_authstormpath_Auth_Source_Stormpath extends sspmod_core_Auth_UserPa
 
     private $applicationHref;
 
+    private $customAttributesToFilter = ['href', 'createdAt', 'modifiedAt', 'httpStatus'];
+
     public function __construct($info, &$config)
     {
         parent::__construct($info, $config);
@@ -50,13 +52,37 @@ class sspmod_authstormpath_Auth_Source_Stormpath extends sspmod_core_Auth_UserPa
             $result = $application->authenticate($username, $password);
             $account = $result->getAccount();
             //SimpleSAML_Logger::info('account ' . var_dump($account, true));
-            return array(
+            $attributes = array(
                 'username' => array($account->username),
                 'email' => array($account->email),
                 'fullName' => array($account->fullName),
                 'givenName' => array($account->givenName),
-                'sn' => array($account->surname),
+                'surname' => array($account->surname),
             );
+            $customData = $account->getCustomData();
+
+            // Stormpath always sets these, but they are a pain to set during mocking.
+            if ($customData && $customData->getHref()) {
+                //$customData doesn't seem to actually have been materialized without first doing a get on a property
+                // but we want to list of all the properties so we get the whole resource.
+                $customData = $client->getDataStore()->getResource(
+                    $customData->getHref(),
+                    \Stormpath\Stormpath::CUSTOM_DATA
+                );
+                foreach ($customData->getPropertyNames() as $property) {
+                    // TODO: handle complex custom attributes
+                    if (!array_key_exists($property, $this->customAttributesToFilter)) {
+                        $value = $customData->getProperty($property);
+                        if (is_array($value)) {
+                            $attributes[$property] = $value;
+                        } else {
+                            // SSP likes attributes as an array
+                            $attributes[$property] = [$value];
+                        }
+                    }
+                }
+            }
+            return $attributes;
         } catch (\Stormpath\Resource\ResourceError $re) {
             SimpleSAML_Logger::info("Stormpath Auth error {$re->getStatus()}, code {$re->getErrorCode()} ," .
                 "msg {$re->getMessage()} devmsg {$re->getDeveloperMessage()}");
