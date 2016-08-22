@@ -93,7 +93,6 @@ class StormpathTest extends \PHPUnit_Framework_TestCase
 
         $stubApplication = $this->getMockBuilder('\Stormpath\Resource\Application')
             ->getMock();
-        //FIXME: check password/username
         $stubApplication->method('authenticate')
             ->with(self::$good_username, self::$good_password)
             ->willReturn($stubAuthenticationResult);

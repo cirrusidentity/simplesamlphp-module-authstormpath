@@ -9,7 +9,7 @@ SSP Authentication Module for stormpath
 
 Module targets php 5.6 and later. This is a requirement for some
 version of our dependencies (we need phpunit > 5.2), and older version
-have lost (or are about to lose) security support.  ## SSP Integration
+have lost (or are about to lose) security support.
 
 ## SSP Integration
 
