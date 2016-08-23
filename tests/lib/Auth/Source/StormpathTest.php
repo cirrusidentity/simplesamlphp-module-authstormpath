@@ -139,7 +139,7 @@ class StormpathTest extends \PHPUnit_Framework_TestCase
 
         $stubApplication = $this->getMockBuilder('\Stormpath\Resource\Application')
             ->getMock();
-        $stubApplication->method('authenticate')
+        $stubApplication->method('authenticateAccount')
             ->willThrowException($exception);
 
         //TODO: consolidate the stub creation with the other method
