@@ -11,6 +11,8 @@ class sspmod_authstormpath_Auth_Source_Stormpath extends sspmod_core_Auth_UserPa
 
     private $applicationHref;
 
+    private $accountStore;
+
     private $customAttributesToFilter = ['href', 'createdAt', 'modifiedAt', 'httpStatus'];
 
     public function __construct($info, &$config)
@@ -20,6 +22,8 @@ class sspmod_authstormpath_Auth_Source_Stormpath extends sspmod_core_Auth_UserPa
         $this->config = \SimpleSAML_Configuration::loadFromArray($config);
 
         $this->applicationHref = $this->config->getString('applicationHref');
+        // defaults against authenticating against all account stores
+        $this->accountStore = $this->config->getString('accountStore', null);
 
         //FIXME: add config validation tests
 
@@ -41,15 +45,28 @@ class sspmod_authstormpath_Auth_Source_Stormpath extends sspmod_core_Auth_UserPa
         $application = $client->getDataStore()->getResource($this->applicationHref, \Stormpath\Stormpath::APPLICATION);
 
         try {
-            //TODO: set the organization to authentiate against (per
-            // https://docs.stormpath.com/rest/product-guide/latest/multitenancy.html#authenticating-an-account-against-an-organization)
-            // rather than authing against all Account Stores
-            //$accountStore = $anAccountStoreMapping->getAccountStore();
-            //$authenticationRequest = new UsernamePasswordRequest('usernameOrEmail', 'password',
-            //   array('accountStore' => $accountStore));
-            //$result = $application->authenticateAccount($authenticationRequest);
+            $options = [];
+            if (!empty($this->accountStore)) {
+                $accountStoreResource = new Stormpath\Resource\AccountStore();
+                $data = new \stdClass();
+                $data->href = $this->accountStore;
+                $accountStoreResource->setProperties($data);
+                /* Retrieving the actual resource breaks the resulting auth POST since the body contains unhandled
+                attributes. In addition, we can save an extra API call by just creating out own unmaterialized resource.
+                */
+                //$accountStoreResource = $client->getDataStore()
+                //->getResource($this->accountStore, \Stormpath\Stormpath::ACCOUNT_STORE);
+                $options['accountStore'] = $accountStoreResource;
+            }
 
-            $result = $application->authenticate($username, $password);
+            $authenticationRequest = new Stormpath\Authc\UsernamePasswordRequest(
+                $username,
+                $password,
+                $options
+            );
+            $result = $application->authenticateAccount($authenticationRequest);
+
+            //$result = $application->authenticate($username, $password);
             $account = $result->getAccount();
             //SimpleSAML_Logger::info('account ' . var_dump($account, true));
             $attributes = array(

@@ -12,6 +12,9 @@ class StormpathIntegrationTest extends \PHPUnit_Framework_TestCase
 {
     public static $good_username;
     public static $good_password;
+    //public static $good_account_source = 'https://api.stormpath.com/v1/directories/46dqziD8hKBptP1Q8mgR61';
+    public static $good_account_store = 'https://api.stormpath.com/v1/organizations/2XLc2nMOnS9vlWMh02wrJJ';
+    public static $incorrect_account_store = 'https://api.stormpath.com/v1/organizations/2LuViqGbaUKgiSIX1zUrMv';
 
     public static $applicationHref;
     public static $apiKeyFileLocation;
@@ -41,7 +44,11 @@ class StormpathIntegrationTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function testCorrectPasswordAndAttributeMapping()
+    /**
+     * @dataProvider correctAuthenticationProvider
+     * @param the account store to authentication against. null means all accountstores
+     */
+    public function testCorrectPasswordAndAttributeMapping($accountStore)
     {
         $info = array(
             'AuthId' => 'sample_stormpath'
@@ -49,6 +56,7 @@ class StormpathIntegrationTest extends \PHPUnit_Framework_TestCase
         $config = array(
             'applicationHref' => self::$applicationHref,
             'apiKeyFileLocation' => self::$apiKeyFileLocation,
+            'accountStore' => $accountStore
         );
         $authSource = new \sspmod_authstormpath_Auth_Source_Stormpath($info, $config);
 
@@ -61,13 +69,21 @@ class StormpathIntegrationTest extends \PHPUnit_Framework_TestCase
 
     }
 
+    public function correctAuthenticationProvider()
+    {
+        return array(
+            'no account store' => array(null),
+            'org account store' => array(self::$good_account_store)
+        );
+    }
+
     /**
      * @dataProvider badUserPasswordProvider
      * @param $username username to check
      * @param $password password to check
      * @throws \SimpleSAML_Error_Error expected error
      */
-    public function testIncorrectPasswordUsername($username, $password)
+    public function testIncorrectPasswordUsername($username, $password, $accountStore)
     {
         $this->expectException(\SimpleSAML_Error_Error::class);
         $info = array(
@@ -76,6 +92,8 @@ class StormpathIntegrationTest extends \PHPUnit_Framework_TestCase
         $config = array(
             'applicationHref' => self::$applicationHref,
             'apiKeyFileLocation' => self::$apiKeyFileLocation,
+            'accountStore' => $accountStore
+
         );
         $authSource = new \sspmod_authstormpath_Auth_Source_Stormpath($info, $config);
 
@@ -86,12 +104,15 @@ class StormpathIntegrationTest extends \PHPUnit_Framework_TestCase
     public function badUserPasswordProvider()
     {
         return array(
-            array(self::$good_username, null),
-            array(self::$good_username, ''),
-            array(self::$good_username, 'wrongpassword'),
-            array(null, self::$good_password),
-            array('', self::$good_password),
-            array('nosuchuser', self::$good_password),
+            array(self::$good_username, null, self::$good_account_store),
+            array(self::$good_username, '', self::$good_account_store),
+            array(self::$good_username, 'wrongpassword', self::$good_account_store),
+            array(null, self::$good_password, self::$good_account_store),
+            array('', self::$good_password, self::$good_account_store),
+            array('nosuchuser', self::$good_password, null),
+            // Correct credentials, but wrong account store
+            array(self::$good_username, self::$good_password, self::$incorrect_account_store),
+
         );
     }
 }

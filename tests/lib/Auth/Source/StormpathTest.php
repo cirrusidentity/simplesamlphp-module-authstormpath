@@ -98,8 +98,12 @@ class StormpathTest extends \PHPUnit_Framework_TestCase
 
         $stubApplication = $this->getMockBuilder('\Stormpath\Resource\Application')
             ->getMock();
-        $stubApplication->method('authenticate')
-            ->with(self::$good_username, self::$good_password)
+        $stubApplication->method('authenticateAccount')
+            ->with($this->callback(function(\Stormpath\Authc\UsernamePasswordRequest $request){
+                return $request->getPrincipals() === self::$good_username &&
+                $request->getCredentials() === str_split(self::$good_password);
+            }))
+//            ->with(self::$good_username, self::$good_password)
             ->willReturn($stubAuthenticationResult);
 
         $stubDataStore = $this->getMockBuilder('\Stormpath\DataStore\DataStore')
