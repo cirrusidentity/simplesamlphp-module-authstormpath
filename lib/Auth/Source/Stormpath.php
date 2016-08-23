@@ -88,7 +88,8 @@ class sspmod_authstormpath_Auth_Source_Stormpath extends sspmod_core_Auth_UserPa
                 );
                 foreach ($customData->getPropertyNames() as $property) {
                     // TODO: handle complex custom attributes
-                    if (!array_key_exists($property, $this->customAttributesToFilter)) {
+                    SimpleSAML_Logger::debug('mapping custom property ' . $property);
+                    if (!in_array ($property, $this->customAttributesToFilter, true)) {
                         $value = $customData->getProperty($property);
                         if (is_array($value)) {
                             $attributes[$property] = $value;

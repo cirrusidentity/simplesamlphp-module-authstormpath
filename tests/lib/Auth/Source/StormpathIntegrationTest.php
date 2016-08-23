@@ -67,6 +67,8 @@ class StormpathIntegrationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['User'], $attributes['surname']);
         $this->assertEquals(['4438ea02-5791-4fdb-983b-b35d69eb4c31'], $attributes['customAttribute']);
 
+        $this->assertFalse(array_key_exists('httpStatus', $attributes), 'Operations attributes should be filtered');
+
     }
 
     public function correctAuthenticationProvider()
