@@ -87,6 +87,7 @@ curl --user $STORMPATHCRED "https://api.stormpath.com/v1/accounts/1IcDYuodly2bgd
      "customBoolean" : true,
       "customNull" : null,
       "customArray": ["a", "b", "c"],
+      "customNumber": 42,
       "customComplex" : {
         "subAttr" : "subValue",
         "subComplex" : {

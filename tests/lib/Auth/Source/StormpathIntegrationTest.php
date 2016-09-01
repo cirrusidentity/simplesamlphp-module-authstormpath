@@ -69,6 +69,7 @@ class StormpathIntegrationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['a', 'b', 'c'], $attributes['customArray']);
         $this->assertEquals([true], $attributes['customBoolean']);
         $this->assertEquals([null], $attributes['customNull']);
+        $this->assertEquals([42], $attributes['customNumber']);
         $this->assertArrayNotHasKey('customComplex', $attributes, "TBD: how to encode complex attributes");
 
 
