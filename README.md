@@ -83,6 +83,16 @@ curl --user $STORMPATHCRED "https://api.stormpath.com/v1/accounts/1IcDYuodly2bgd
     "href": "https://api.stormpath.com/v1/accounts/1IcDYuodly2bgdK86rYO1/customData",
     "createdAt": "2016-05-04T20:58:50.533Z",
     "modifiedAt": "2016-08-22T20:30:30.215Z",
-    "customAttribute": "4438ea02-5791-4fdb-983b-b35d69eb4c31"
+    "customAttribute": "4438ea02-5791-4fdb-983b-b35d69eb4c31",
+     "customBoolean" : true,
+      "customNull" : null,
+      "customArray": ["a", "b", "c"],
+      "customComplex" : {
+        "subAttr" : "subValue",
+        "subComplex" : {
+          "turtles" : "allTheWay"
+        },
+        "subArray" : ["x","y"]
+      }
   },
 ```
