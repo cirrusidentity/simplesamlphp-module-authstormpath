@@ -12,9 +12,8 @@ class StormpathIntegrationTest extends \PHPUnit_Framework_TestCase
 {
     public static $good_username;
     public static $good_password;
-    //public static $good_account_source = 'https://api.stormpath.com/v1/directories/46dqziD8hKBptP1Q8mgR61';
-    public static $good_account_store = 'https://api.stormpath.com/v1/organizations/2XLc2nMOnS9vlWMh02wrJJ';
-    public static $incorrect_account_store = 'https://api.stormpath.com/v1/organizations/2LuViqGbaUKgiSIX1zUrMv';
+    public static $good_account_store;
+    public static $incorrect_account_store;
 
     public static $applicationHref;
     public static $apiKeyFileLocation;
@@ -32,6 +31,9 @@ class StormpathIntegrationTest extends \PHPUnit_Framework_TestCase
         self::$good_password = $stormPathSettings['good_password'];
         self::$applicationHref = $stormPathSettings['applicationHref'];
         self::$apiKeyFileLocation = $stormPathSettings['apiKeyFileLocation'];
+        self::$good_account_store = $stormPathSettings['good_account_store'];
+        self::$incorrect_account_store = $stormPathSettings['incorrect_account_store'];
+
     }
 
     protected function setUp()
@@ -71,6 +73,7 @@ class StormpathIntegrationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([null], $attributes['customNull']);
         $this->assertEquals([42], $attributes['customNumber']);
         $this->assertArrayNotHasKey('customComplex', $attributes, "TBD: how to encode complex attributes");
+
 
 
 
