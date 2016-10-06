@@ -3,6 +3,71 @@
 # simplesamlphp-module-authstormpath
 SSP Authentication Module for stormpath
 
+# Usage
+
+## Install
+
+The module is installable with composer.
+
+```bash
+composer config repositories.cirrus-authstormpath git https://github.com/cirrusidentity/simplesamlphp-module-authstormpath
+composer require cirrusidentity/simplesamlphp-module-authstormpath:dev-master
+```
+
+## Configuration
+
+In `authsources.php` configure the module
+```php
+$config = array(
+    'stormpath' => array(
+        'authstormpath:Stormpath',
+        // The Stormpath application to use for authenticating
+        'applicationHref' => 'https://api.stormpath.com/v1/applications/1TQNTuiFuXSzJGvaMHs4qI',
+        // Stormpath API key file
+        'apiKeyFileLocation' => '/path/to/stormpath.properties',
+	// Optional account store to authenticate users against.
+        // If not set, authentication happens against any account store configured for the application
+        'accountStore' => 'https://api.stormpath.com/v1/organizations/3DuSeGAkNGZeOqewOy1fSP',
+    ),
+);
+```
+
+Provide the Stormpath api key properties file defined for `apiKeyFileLocation`
+
+```
+apiKey.id = JKJADF62JHH0HB234DF
+apiKey.secret = JI23423SOMESECRETNJKNADFOIJ298U432
+```
+
+## Attributes
+
+All user profile and custom data (excluding complex attributes) are mapped to SAML attributes. The attribute names will match the Stormpath names.
+You will likely want to map these to OIDs or Ldap names, depending on your usecase.
+
+In your `saml20-idp-hosted.php` file
+
+```php
+'authproc' => array(
+            // Map Stormpath attributes
+            150 => array(
+                'class' => 'core:AttributeMap',
+                // stormpath attributes
+                'fullName' => 'urn:oid:2.16.840.1.113730.3.1.241',
+                'email' => 'urn:oid:0.9.2342.19200300.100.1.3',
+                'givenName' => 'urn:oid:2.5.4.42',
+                'surname' => 'urn:oid:2.5.4.4',
+            ),
+            // Map any attributes that have multiple oids
+            160 => array(
+                'class' => 'core:AttributeMap',
+                '%duplicate',
+                //displayname => cn
+                'urn:oid:2.16.840.1.113730.3.1.241' => 'urn:oid:2.5.4.3',
+            ),
+)
+```
+
+
 # Development
 
 ## PHP Version
