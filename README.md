@@ -104,10 +104,29 @@ We make use of features found in later versions of phpunit. The version installe
 
 ## Stormpath Integration Tests
 
-Some integration tests are performed against Stormpath APIs. You can run these by setting up a storm path API key/secret and having certain users.
+Some integration tests are performed against Stormpath APIs. You can run these by setting up a stormpath API key/secret and having certain users present in your stormpath tenant
+
+### Travis CI
+
+The `travis-secrets.tar.enc` file is encrypted for use by travis-ci. The build will decrypt and untar two files: `ssp-authstormpath-test.ini` and `apiKey-test.properties` 
+that contain secret information for doing integrations with Stormpath. You can setup your own local version of those files, with your own free Stormpath tenant.
+
+Occasionaly the tar file will need to be update.
 
 ```bash
-cat ~/.stormpath/ssp-authstormpath-test.ini; echo
+tar czf travis-secrets.tar apiKey-test.properties ssp-authstormpath-test.ini 
+travis encrypt-file travis-secrets.tar 
+git add travis-secrets.tar.enc
+git commit -m '...'
+
+```
+
+### Local Testing
+
+You can setup your own instance of Stormpath to run integration tests.
+
+```bash
+cat ssp-authstormpath-test.ini; echo
 # Username for a user to test authentication with
 good_username=testusername
 # Password used for testing authentication
@@ -115,11 +134,11 @@ good_password=pasSWORD
 # Your application href
 applicationHref=https://api.stormpath.com/v1/applications/43tLg9FaBMBOXqAhsCYXlb
 # Where the credentials for the stormpath API are stored
-apiKeyFileLocation=/Users/user/.stormpath/apiKey.properties
+apiKeyFileLocation=apiKey-test.properties
 ```
 
 ```bash
-cat ~/.stormpath/apiKey.properties
+cat apiKey-test.properties
 apiKey.id = 56adfZPBJEQWOBP0XTGADSAB6
 apiKey.secret = qiibyVsZWzMXvt9Oi2Lt4Wnp+pv/G7mx4koa+gmFM
 ```
