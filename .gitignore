@@ -2,3 +2,7 @@
 .idea
 /vendor/
 /build/
+# Exclude files with secrets that are used by Travis CI
+apiKey-test.properties
+ssp-authstormpath-test.ini
+travis-secrets.tar
