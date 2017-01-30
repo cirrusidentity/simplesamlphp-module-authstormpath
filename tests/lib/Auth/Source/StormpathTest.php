@@ -47,7 +47,39 @@ class StormpathTest extends \PHPUnit_Framework_TestCase
         //TODO: fill out rest of attribute assertion
     }
 
+    /**
+     * Test that we fail early on blank username
+     * @throws \SimpleSAML_Error_Error expected error
+     */
+    public function testQuickFailForBlankUsername()
+    {
+        //TODO: confirm the error content
+        $this->expectException(\SimpleSAML_Error_Error::class);
 
+        $info = array(
+            'AuthId' => 'sample_stormpath'
+        );
+        $authSource = new \sspmod_authstormpath_Auth_Source_Stormpath($info, $this->defaultConfig);
+
+        $authSource->login('', 'password');
+    }
+
+    /**
+     * Test that we fail early on blank password
+     * @throws \SimpleSAML_Error_Error expected error
+     */
+    public function testQuickFailForBlankPassword()
+    {
+        //TODO: confirm the error content
+        $this->expectException(\SimpleSAML_Error_Error::class);
+
+        $info = array(
+            'AuthId' => 'sample_stormpath'
+        );
+        $authSource = new \sspmod_authstormpath_Auth_Source_Stormpath($info, $this->defaultConfig);
+
+        $authSource->login('smething', '');
+    }
 
     /**
      * @dataProvider authenticationErrorProvider

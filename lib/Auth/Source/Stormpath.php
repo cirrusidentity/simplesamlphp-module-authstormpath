@@ -41,6 +41,14 @@ class sspmod_authstormpath_Auth_Source_Stormpath extends sspmod_core_Auth_UserPa
      */
     public function login($username, $password)
     {
+        if (empty($username)) {
+            SimpleSAML_Logger::info('No username provided');
+            throw new SimpleSAML_Error_Error('WRONGUSERPASS');
+        }
+        if (empty($password)) {
+            SimpleSAML_Logger::info("No password provided for '$username'");
+            throw new SimpleSAML_Error_Error('WRONGUSERPASS');
+        }
         $client = $this->resourceProvider->getClient();
         $application = $client->getDataStore()->getResource($this->applicationHref, \Stormpath\Stormpath::APPLICATION);
 
@@ -106,7 +114,7 @@ class sspmod_authstormpath_Auth_Source_Stormpath extends sspmod_core_Auth_UserPa
             return $attributes;
         } catch (\Stormpath\Resource\ResourceError $re) {
             SimpleSAML_Logger::info("Stormpath Auth error {$re->getStatus()}, code {$re->getErrorCode()} ," .
-                "msg {$re->getMessage()} devmsg {$re->getDeveloperMessage()}");
+                "msg {$re->getMessage()} devmsg {$re->getDeveloperMessage()} user '$username'");
             //TODO: distinguish between error types
             throw new SimpleSAML_Error_Error('WRONGUSERPASS');
         }

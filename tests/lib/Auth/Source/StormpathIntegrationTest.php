@@ -23,7 +23,7 @@ class StormpathIntegrationTest extends \PHPUnit_Framework_TestCase
     public static function setUpBeforeClass()
     {
         putenv('SIMPLESAMLPHP_CONFIG_DIR=' . dirname(dirname(dirname(__DIR__))) . '/config');
-	$iniConfig = dirname(dirname(dirname(dirname(__DIR__)))) . '/ssp-authstormpath-test.ini';
+	    $iniConfig = dirname(dirname(dirname(dirname(__DIR__)))) . '/ssp-authstormpath-test.ini';
         $stormPathSettings = parse_ini_file($iniConfig);
         self::$INI_LOADED = ($stormPathSettings !== false);
 
